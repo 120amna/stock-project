@@ -1,5 +1,5 @@
 <?php
-class user extends my_controller
+class User extends CI_controller
 {
 	public function user_sing_in()
 	{

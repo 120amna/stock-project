@@ -21,7 +21,7 @@ class my_model extends CI_Model
 		         	return false;
 		         }
 	}
-// product iteams insert coding 
+// product iteams insert coding
 	public function product_iteams($array)
 	{
 		return $this->db->insert('products',$array);
@@ -34,16 +34,16 @@ class my_model extends CI_Model
 		         ->limit($limit,$offset)
 		         ->get();
 		          return $q->result();
-		         
+
 	}
-//coding for pagination 
+//coding for pagination
 	public function num_rows()
 	{
 		$q = $this->db->select()
 		         ->from('products')
 		         ->get();
 		          return $q->num_rows();
-		         
+
 	}
 // upload Image Insert Coding
 	public function Image_insert($array)
@@ -57,7 +57,7 @@ class my_model extends CI_Model
 		     ->where('id',$id)
 		     ->get('products');
 		   return 	$q->row();
-		  
+
 	}
 // product update coding
 	public function product_edit($array_id,Array $array_data)
@@ -70,11 +70,11 @@ class my_model extends CI_Model
 	{
 	$q = $this->db->select('products.id,products.title,products.price,productimages.imageUrl')
 	        ->from('products')
-	        ->join('productimages','products.id = productimages.productId') 
-	        // ->join('users','users.id = products.id') 
+	        ->join('productimages','products.id = productimages.productId')
+	        // ->join('users','users.id = products.id')
 	        ->get();
 	       return  $q->result();
-	        
+
 	}
 // add_to_cart coding
 	public function add_to_carts($array)
@@ -85,7 +85,7 @@ class my_model extends CI_Model
     public function join_cart()
     {
     	$id = $this->session->userdata('id');
-      $q = $this->db->select('products.id,cart.userId,cart.productId,cart.dateTime,products.title,products.price,productimages.imageUrl')
+      $q = $this->db->select('cart.quantity, products.id,cart.userId,cart.productId,cart.dateTime,products.title,products.price,productimages.imageUrl')
     	->from('cart')
     	->where(['userId'=>$id])
     	->join('products','products.id = cart.productId')

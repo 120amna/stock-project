@@ -1,14 +1,14 @@
 <?php
-class admin extends my_controller
+class Admin extends CI_controller
 {
 // sing_in page coding
 	public function sing_in()
 	{
 		if($this->form_validation->run('form_validation_rules'))
-		{ 
+		{
 			$data = $this->input->post();
-			 
-		 $this->load->model('my_model');
+
+		 $this->load->model('My_model');
 		$data_insert =  $this->my_model->sing_in($data);
 		// print_r($data_insert);
 		$this->load->view('users/login_form');
@@ -21,9 +21,9 @@ class admin extends my_controller
 // login page coding
 	public function login()
 	{
-		 
+
 		if($this->form_validation->run('login_form_validation'))
-		{ 
+		{
 			$userName = $this->input->post('userName');
 			$Pass = $this->input->post('password');
 			// echo $userName."<br><br>".$Pass;
@@ -35,7 +35,7 @@ class admin extends my_controller
 			}else
 			{
 				$this->session->set_flashdata('Login Failed','Invalied UserName/Password');
-			$this->load->view('users/login_form');	
+			$this->load->view('users/login_form');
 			}
 		}else
 		{
@@ -80,7 +80,7 @@ class admin extends my_controller
 		if($this->form_validation->run('product_itemas_validation'))
 		{
 			$data = $this->input->post();
-		 
+
 		 $this->load->model('my_model');
 		$data_insert =  $this->my_model->product_iteams($data);
 		// print_r($data_insert);
@@ -93,7 +93,7 @@ class admin extends my_controller
 			$this->load->view('users/product_iteams');
 		}
 	}
-// get product id 
+// get product id
 	public function product_id($id)
 	{
 		$this->load->view('users/add_image',['id'=>$id]);
@@ -107,13 +107,13 @@ class admin extends my_controller
 			'allowed_types'=>'gif|jpg|jpeg',
 		];
 		$this->load->library('upload',$config);
-		 
+
 		if($this->upload->do_upload())
 		{
 			$post = $this->input->post();
 			 $data=$this->upload->data();
 	$pic_path=base_url("upload/".$data ['raw_name'].$data['file_ext']);
-			  
+
 			 $post['imageUrl']=$pic_path;
 			 $this->load->model('my_model');
 			 $tada=$this->my_model->Image_insert($post);
@@ -179,29 +179,29 @@ class admin extends my_controller
 			$post['dateTime'] = date('Y-m-d h:m:i');
 			$post['status'] = 1;
 			$post['quantity'] = 1;
-			$post['userId'] = $this->session->userdata('id');			 
+			$post['userId'] = $this->session->userdata('id');
 		 $data = $this->my_model->add_to_carts($post);
 		 if($data)
-		 {			
-		 $this->session->set_flashdata('Product Add','Product Add Successfully');			
-		 return redirect('admin/user_dashborad'); 
+		 {
+		 $this->session->set_flashdata('Product Add','Product Add Successfully');
+		 return redirect('admin/user_dashborad');
 		 }else
 		 {
 		 $this->session->set_flashdata('Product Add','Product Not Add Successfully');
 		 return redirect('admin/user_dashborad');
 		 }
-		 
+
 	}
-// coding for cart page	
+// coding for cart page
 	public function cart()
-	{ 
+	{
 		 $data = $this->my_model->join_cart();
 		return  $this->load->view('users/cart',['user_data'=>$data]);
 	}
 // mange to cart coding
 	public function mange_to_cart()
 	{
-		$data = $this->my_model->join_cart();			
+		$data = $this->my_model->join_cart();
 		return $this->load->view('users/mange_to_cart',['product_data'=>$data]);
 	}
 	public function sums($id)
@@ -211,14 +211,28 @@ class admin extends my_controller
 	}
 	public function buy_order($id)
 	{
-		$post = array();
-		    $post['total'] = 'quantity';
-			$post['dateTime'] = date('Y-m-d h:m:i');
-			$post['status'] = 1;
-			$post['userId'] = $this->session->userdata('id');
+			$order = array();
+		  $order['total'] = 'quantity';
+			$order['dateTime'] = date('Y-m-d h:m:i');
+			$order['status'] = 1;
+			$order['userId'] = $this->session->userdata('id');
 			echo "<pre>";
-			print_r($post);
+
+			$cartItems = $this->my_model->join_cart();
+			$total = 0;
+			$orderItems = array();
+			foreach ($cartItems as $key => $value) {
+				$orderItems[$key] = $value;
+				$orderItems[$key]->total = $value->quantity * $value->price;
+				$total += $value->quantity * $value->price;
+			}
+			$order['total'] = $total;
+
+
+			print_r($order);
+			print_r($orderItems);
+			echo $total;
 	}
-	// select sum()	
+	// select sum()
 }
 ?>
